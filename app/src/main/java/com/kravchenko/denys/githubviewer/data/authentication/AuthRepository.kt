@@ -1,11 +1,10 @@
 package com.kravchenko.denys.githubviewer.data.authentication
 
-class AuthRepository: IAuthRepository {
-    override fun sigIn() {
+class AuthRepository {
+    fun sigIn() {
         TODO("Not yet implemented")
     }
-
-    override fun sigOut() {
+    fun sigOut() {
         TODO("Not yet implemented")
     }
 }

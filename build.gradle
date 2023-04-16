@@ -5,6 +5,7 @@ buildscript {
         retrofit_version = '2.9.0'
         koin_android_compose_version = '3.4.0'
         logging_interceptor_version = '4.10.0'
+        compose_nav_version = '2.5.3'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
