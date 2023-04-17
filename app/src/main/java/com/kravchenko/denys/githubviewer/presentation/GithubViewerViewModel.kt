@@ -9,7 +9,7 @@ import com.kravchenko.denys.githubviewer.model.UserRepositoriesResponse
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import kotlinx.coroutines.launch
 
-class GithubViewerViewModel(val repository: GithubRepository) : ViewModel() {
+class GithubViewerViewModel(private val repository: GithubRepository) : ViewModel() {
 
     private val _response: MutableLiveData<NetworkResult<UserRepositoriesResponse>> =
         MutableLiveData()
