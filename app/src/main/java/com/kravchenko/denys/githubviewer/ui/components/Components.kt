@@ -22,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SearchView(state: MutableState<TextFieldValue>) {
+fun SearchView(state: MutableState<TextFieldValue>, onValueChange: (value: String) -> Unit) {
     TextField(
         value = state.value,
-        onValueChange = { value ->
+        onValueChange =
+        { value ->
             state.value = value
+            onValueChange.invoke(value.text)
         },
         modifier = Modifier.fillMaxWidth(),
         textStyle = TextStyle(color = Color.White, fontSize = 18.sp),

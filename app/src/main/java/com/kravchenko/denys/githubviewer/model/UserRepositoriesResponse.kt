@@ -2,12 +2,6 @@ package com.kravchenko.denys.githubviewer.model
 
 import com.google.gson.annotations.SerializedName
 
-data class UserRepositoriesResponse(
-
-	@field:SerializedName("UserRepositoriesResponse")
-	val userRepositoriesResponse: List<UserRepositoriesResponseItem?>? = null
-)
-
 data class UserRepositoriesResponseItem(
 
 	@field:SerializedName("allow_forking")
