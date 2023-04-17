@@ -7,6 +7,7 @@ buildscript {
         logging_interceptor_version = '4.10.0'
         compose_nav_version = '2.5.3'
         compose_runtime_version = '1.4.1'
+        coil_version = '2.3.0'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

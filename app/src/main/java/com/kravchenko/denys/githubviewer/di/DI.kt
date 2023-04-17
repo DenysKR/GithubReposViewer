@@ -19,8 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
     single { GithubRepository(get()) }
-    viewModel<GithubViewerViewModel>()
-
+    single { GithubViewerViewModel(get()) }
 }
 
 val networkModule = module {
