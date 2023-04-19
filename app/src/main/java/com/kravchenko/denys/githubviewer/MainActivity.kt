@@ -1,13 +1,17 @@
 package com.kravchenko.denys.githubviewer
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
@@ -59,9 +63,10 @@ class MainActivity : ComponentActivity() {
             buildRepositoryScreen()
             buildSearchScreen(navController)
         }
-        when (viewModel.user.observeAsState()?.value) {
-            is NetworkResult.Error -> {
 
+        when (val user = viewModel.user.observeAsState()?.value) {
+            is NetworkResult.Error -> {
+                user.message?.let { showToast(it) }
             }
 
             is NetworkResult.Success<UserResponse> -> {
@@ -71,11 +76,20 @@ class MainActivity : ComponentActivity() {
             }
 
             is NetworkResult.Loading -> {
-
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator()
+                }
             }
 
             else -> {}
         }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun NavGraphBuilder.buildSignInScreen(
