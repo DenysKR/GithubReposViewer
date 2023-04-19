@@ -12,5 +12,11 @@ class GithubRepository(private val api: GithubAPI) : BaseApiResponse() {
             val apiCall = safeApiCall { api.getUserRepos(userName) }
             emit(apiCall)
         }.flowOn(Dispatchers.IO)
+
+    fun getAuthenticatedUser() =
+        flow {
+            val apiCall = safeApiCall { api.getUser() }
+            emit(apiCall)
+        }.flowOn(Dispatchers.IO)
 }
 

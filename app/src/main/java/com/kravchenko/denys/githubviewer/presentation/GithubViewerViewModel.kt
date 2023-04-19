@@ -4,25 +4,34 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kravchenko.denys.githubviewer.BuildConfig
 import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.model.UserRepositoriesResponseItem
+import com.kravchenko.denys.githubviewer.model.UserResponse
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import kotlinx.coroutines.launch
 
 class GithubViewerViewModel(private val repository: GithubRepository) : ViewModel() {
+    var githubToken = BuildConfig.GITHUB_TOKEN
 
-    private val _response: MutableLiveData<NetworkResult<List<UserRepositoriesResponseItem>>> =
+    private val _userRepos: MutableLiveData<NetworkResult<List<UserRepositoriesResponseItem>>> =
         MutableLiveData()
-    val response: LiveData<NetworkResult<List<UserRepositoriesResponseItem>>> = _response
+    val userRepos: LiveData<NetworkResult<List<UserRepositoriesResponseItem>>> = _userRepos
+
+    private val _user: MutableLiveData<NetworkResult<UserResponse>> =
+        MutableLiveData()
+    val user: MutableLiveData<NetworkResult<UserResponse>> = _user
+
     fun fetchUserRepos(userName: String) = viewModelScope.launch {
         if (userName.length > 2)//At least 2 letters should be typed for starting search
             repository.getUserRepos(userName).collect { values ->
-                _response.value = values
+                _userRepos.value = values
             }
     }
 
-    //TODO Implement me
-    fun signIn(){
-
+    fun signIn() = viewModelScope.launch {
+        repository.getAuthenticatedUser().collect { user ->
+            _user.value = user
+        }
     }
 }
