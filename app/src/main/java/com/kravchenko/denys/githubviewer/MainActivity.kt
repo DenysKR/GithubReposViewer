@@ -33,6 +33,7 @@ import coil.request.ImageRequest
 import com.kravchenko.denys.githubviewer.model.UserRepositoriesResponseItem
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
+import com.kravchenko.denys.githubviewer.ui.auth.SignInScreen
 import com.kravchenko.denys.githubviewer.ui.components.ItemList
 import com.kravchenko.denys.githubviewer.ui.components.SearchView
 import com.kravchenko.denys.githubviewer.ui.theme.GithubViewerTheme
@@ -55,17 +56,27 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //TODO Refactor navigation
     @Composable
     fun GithubViewerNavHost(
+        viewModel: GithubViewerViewModel = koinViewModel(),
         modifier: Modifier = Modifier.fillMaxSize(),
         navController: NavHostController = rememberNavController(),
-        startDestination: String = "search"
+        startDestination: String = "sign_in"
     ) {
         NavHost(
             modifier = modifier,
             navController = navController,
             startDestination = startDestination
         ) {
+            composable("sign_in") {
+                SignInScreen(modifier) {
+                    navController.navigate("profile") {
+                        popUpTo("sign_in") { inclusive = true }
+                    }
+                    viewModel.signIn()
+                }
+            }
             composable("profile") {
                 ProfileScreen()
             }

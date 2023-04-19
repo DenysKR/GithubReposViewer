@@ -20,4 +20,9 @@ class GithubViewerViewModel(private val repository: GithubRepository) : ViewMode
                 _response.value = values
             }
     }
+
+    //TODO Implement me
+    fun signIn(){
+
+    }
 }
