@@ -26,10 +26,9 @@ fun SignInScreen(
     onClick: () -> Unit
 ) {
     var githubToken by remember { mutableStateOf(BuildConfig.GITHUB_TOKEN) }
-    var clickButtonState by remember { mutableStateOf(false) }
+    var clickButtonState by remember { mutableStateOf(githubToken.isNotBlank()) }
 
     Row(
-
         modifier = screenModifier.padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -41,11 +40,11 @@ fun SignInScreen(
                 clickButtonState = it.length > enableSignInThreshold
                 githubToken = it
             },
-            label = { Text(stringResource(R.string.type_github_token)) },
+            placeholder = { Text(stringResource(R.string.type_github_token)) },
             singleLine = true
         )
 
-        Button(onClick = onClick) {
+        Button(onClick = onClick, enabled = clickButtonState) {
             Text(text = stringResource(R.string.sign_in))
         }
     }
