@@ -78,8 +78,20 @@ fun SignInScreen(
 }
 
 @Composable
-fun ProfileScreen() {
-    Text(text = "Profile")
+fun ProfileScreen(viewModel: GithubViewerViewModel) {
+    val user = viewModel.userInfo
+    Row(modifier = Modifier.padding(top = 10.dp, start = 10.dp)) {
+        AsyncImage(
+            model = user.avatarUrl,
+            contentDescription = stringResource(R.string.user_avatar),
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+        )
+        Column(verticalArrangement = Arrangement.Top) {
+            Text("${user.name}")
+            Text(stringResource(R.string.followers_count, user.followers ?: 0))
+            Text(stringResource(R.string.followers_count, user.following ?: 0))
+        }
+    }
 }
 
 @Composable

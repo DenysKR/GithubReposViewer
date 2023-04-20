@@ -18,9 +18,11 @@ class GithubViewerViewModel(private val repository: GithubRepository) : ViewMode
         MutableLiveData()
     val userRepos: LiveData<NetworkResult<List<UserRepositoriesResponseItem>>> = _userRepos
 
-    private val _user: MutableLiveData<NetworkResult<UserResponse>> =
+    private val _userResponse: MutableLiveData<NetworkResult<UserResponse>> =
         MutableLiveData()
-    val user: MutableLiveData<NetworkResult<UserResponse>> = _user
+    val userResponse: MutableLiveData<NetworkResult<UserResponse>> = _userResponse
+
+    lateinit var userInfo: UserResponse
 
     fun fetchUserRepos(userName: String) = viewModelScope.launch {
         if (userName.length > 2)//At least 2 letters should be typed for starting search
@@ -31,7 +33,10 @@ class GithubViewerViewModel(private val repository: GithubRepository) : ViewMode
 
     fun signIn() = viewModelScope.launch {
         repository.getAuthenticatedUser().collect { user ->
-            _user.value = user
+            user?.let { userResponse ->
+                _userResponse.value = userResponse
+                userResponse.data?.let { user -> userInfo = user }
+            }
         }
     }
 }

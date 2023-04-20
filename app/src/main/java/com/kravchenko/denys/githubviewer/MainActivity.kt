@@ -59,12 +59,20 @@ class MainActivity : ComponentActivity() {
             modifier = modifier, navController = navController, startDestination = startDestination
         ) {
             buildSignInScreen(modifier, viewModel)
-            buildProfileScreen()
+            buildProfileScreen(viewModel)
             buildRepositoryScreen()
             buildSearchScreen(navController)
         }
 
-        when (val user = viewModel.user.observeAsState()?.value) {
+        observeUserInfo(viewModel, navController)
+    }
+
+    @Composable
+    private fun observeUserInfo(
+        viewModel: GithubViewerViewModel,
+        navController: NavHostController
+    ) {
+        when (val user = viewModel.userResponse.observeAsState()?.value) {
             is NetworkResult.Error -> {
                 user.message?.let { showToast(it) }
             }
@@ -76,15 +84,20 @@ class MainActivity : ComponentActivity() {
             }
 
             is NetworkResult.Loading -> {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    CircularProgressIndicator()
-                }
+                showProgress()
             }
 
             else -> {}
+        }
+    }
+
+    @Composable
+    private fun showProgress() {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            CircularProgressIndicator()
         }
     }
 
@@ -101,9 +114,10 @@ class MainActivity : ComponentActivity() {
         })
     }
 
-    private fun NavGraphBuilder.buildProfileScreen() = composable(PROFILE_TAG) {
-        ProfileScreen()
-    }
+    private fun NavGraphBuilder.buildProfileScreen(viewModel: GithubViewerViewModel) =
+        composable(PROFILE_TAG) {
+            ProfileScreen(viewModel)
+        }
 
     private fun NavGraphBuilder.buildRepositoryScreen() = composable(REPOSITORY_TAG) {
         RepositoryScreen()
