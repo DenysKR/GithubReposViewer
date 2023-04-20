@@ -12,7 +12,6 @@ import com.kravchenko.denys.githubviewer.network.NetworkResult
 import kotlinx.coroutines.launch
 
 class GithubViewerViewModel(private val repository: GithubRepository) : ViewModel() {
-    var githubToken = BuildConfig.GITHUB_TOKEN
 
     private val _userRepos: MutableLiveData<NetworkResult<List<UserRepositoriesResponseItem>>> =
         MutableLiveData()
@@ -31,11 +30,14 @@ class GithubViewerViewModel(private val repository: GithubRepository) : ViewMode
             }
     }
 
-    fun signIn() = viewModelScope.launch {
-        repository.getAuthenticatedUser().collect { user ->
-            user?.let { userResponse ->
-                _userResponse.value = userResponse
-                userResponse.data?.let { user -> userInfo = user }
+    fun signIn(token: String) = viewModelScope.launch {
+        with(repository) {
+            saveAuthToken(token)
+            repository.getAuthenticatedUser().collect { user ->
+                user?.let { userResponse ->
+                    _userResponse.value = userResponse
+                    userResponse.data?.let { user -> userInfo = user }
+                }
             }
         }
     }

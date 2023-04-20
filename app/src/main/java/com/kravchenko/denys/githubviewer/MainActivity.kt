@@ -109,8 +109,8 @@ class MainActivity : ComponentActivity() {
         modifier: Modifier,
         viewModel: GithubViewerViewModel
     ) = composable(SIGN_IN_TAG) {
-        SignInScreen(modifier, githubToken = viewModel.githubToken, onClick = {
-            viewModel.signIn()
+        SignInScreen(modifier, onClick = { token ->
+            viewModel.signIn(token)
         })
     }
 

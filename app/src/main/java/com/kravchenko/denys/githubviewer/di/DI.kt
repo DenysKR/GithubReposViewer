@@ -1,9 +1,9 @@
 package com.kravchenko.denys.githubviewer.di
 
 import android.content.Context
-import com.kravchenko.denys.githubviewer.BuildConfig
 import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.network.GithubAPI
+import com.kravchenko.denys.githubviewer.network.SessionHolder
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
 import com.kravchenko.denys.githubviewer.utils.hasNetwork
 import okhttp3.Cache
@@ -12,23 +12,23 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
-    single { GithubRepository(get()) }
+    single { GithubRepository(get(), get()) }
     single { GithubViewerViewModel(get()) }
 }
 
 val networkModule = module {
-    single { provideRetrofit(androidContext()) }
+    single { provideRetrofit(androidContext(), get()) }
     single { provideGithubApi(get()) }
+    single { SessionHolder() }
 }
 
 private fun provideGithubApi(retrofit: Retrofit) = retrofit.create(GithubAPI::class.java)
-private fun provideRetrofit(context: Context): Retrofit {
+private fun provideRetrofit(context: Context, sessionHolder: SessionHolder): Retrofit {
 
     val baseUrl = "https://api.github.com/"
 
@@ -37,7 +37,7 @@ private fun provideRetrofit(context: Context): Retrofit {
         val headers: Headers =
             request.headers.newBuilder().add(
                 "Authorization",
-                "Bearer ${BuildConfig.GITHUB_TOKEN}"
+                "Bearer ${sessionHolder.githubUserToken}"
             ).build()
         request = request.newBuilder().headers(headers).build()
         chain.proceed(request)

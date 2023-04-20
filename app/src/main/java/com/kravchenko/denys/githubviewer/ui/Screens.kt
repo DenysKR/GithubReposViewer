@@ -45,8 +45,8 @@ private const val enableSignInThreshold = 2
 @Composable
 fun SignInScreen(
     screenModifier: Modifier,
-    onClick: () -> Unit,
-    githubToken: String
+    onClick: (enteredToken: String) -> Unit,
+    githubToken: String = ""
 ) {
     var githubToken by remember { mutableStateOf(githubToken) }
     var clickButtonState by remember { mutableStateOf(githubToken.isNotBlank()) }
@@ -74,8 +74,9 @@ fun SignInScreen(
             )
 
             Button(
-                onClick =
-                onClick, enabled = clickButtonState
+                onClick = {
+                    onClick(githubToken)
+                }, enabled = clickButtonState
             ) {
                 Text(text = stringResource(R.string.sign_in))
             }
