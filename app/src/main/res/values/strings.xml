@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">GithubViewer</string>
     <string name="sign_in">Sign In</string>
-    <string name="type_github_token">Type Github token</string>
+    <string name="type_github_token">Please enter Github token</string>
     <string name="user_avatar">User avatar</string>
-    <string name="followers_count">Follower count: %1$s</string>
-    <string name="following_count">Following count: %1$s</string>
+    <string name="followers_count">Followers count: %1$s</string>
+    <string name="following_count">Followings count: %1$s</string>
+    <string name="github_token">Github token</string>
 </resources>

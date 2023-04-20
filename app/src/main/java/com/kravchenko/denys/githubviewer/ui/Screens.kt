@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -49,30 +50,35 @@ fun SignInScreen(
 ) {
     var githubToken by remember { mutableStateOf(githubToken) }
     var clickButtonState by remember { mutableStateOf(githubToken.isNotBlank()) }
-
-    Row(
+    Column(
         modifier = screenModifier.padding(horizontal = 10.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.Start
     ) {
-        TextField(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 10.dp),
-            value = githubToken,
-            onValueChange = {
-                clickButtonState = it.length > enableSignInThreshold
-                githubToken = it
-            },
-            placeholder = { Text(stringResource(R.string.type_github_token)) },
-            singleLine = true
+        Text(
+            text = stringResource(R.string.github_token), fontStyle = Italic,
+            modifier = Modifier.padding(bottom = 10.dp)
         )
+        Row {
+            TextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 10.dp),
+                value = githubToken,
+                onValueChange = {
+                    clickButtonState = it.length > enableSignInThreshold
+                    githubToken = it
+                },
+                placeholder = { Text(stringResource(R.string.type_github_token)) },
+                singleLine = true
+            )
 
-        Button(
-            onClick =
-            onClick, enabled = clickButtonState
-        ) {
-            Text(text = stringResource(R.string.sign_in))
+            Button(
+                onClick =
+                onClick, enabled = clickButtonState
+            ) {
+                Text(text = stringResource(R.string.sign_in))
+            }
         }
     }
 }
@@ -89,7 +95,7 @@ fun ProfileScreen(viewModel: GithubViewerViewModel) {
         Column(verticalArrangement = Arrangement.Top) {
             Text("${user.name}")
             Text(stringResource(R.string.followers_count, user.followers ?: 0))
-            Text(stringResource(R.string.followers_count, user.following ?: 0))
+            Text(stringResource(R.string.following_count, user.following ?: 0))
         }
     }
 }
