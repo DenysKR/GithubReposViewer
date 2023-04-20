@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -17,18 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.kravchenko.denys.githubviewer.R
-import com.kravchenko.denys.githubviewer.model.UserRepositoriesResponseItem
+import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
 import com.kravchenko.denys.githubviewer.ui.components.ItemList
@@ -50,6 +44,7 @@ fun SignInScreen(
 ) {
     var githubToken by remember { mutableStateOf(githubToken) }
     var clickButtonState by remember { mutableStateOf(githubToken.isNotBlank()) }
+
     Column(
         modifier = screenModifier.padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.Center,
@@ -85,18 +80,39 @@ fun SignInScreen(
 }
 
 @Composable
-fun ProfileScreen(viewModel: GithubViewerViewModel) {
-    val user = viewModel.userInfo
-    Row(modifier = Modifier.padding(top = 10.dp, start = 10.dp)) {
-        AsyncImage(
-            model = user.avatarUrl,
-            contentDescription = stringResource(R.string.user_avatar),
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-        )
-        Column(verticalArrangement = Arrangement.Top) {
-            Text("${user.name}")
-            Text(stringResource(R.string.followers_count, user.followers ?: 0))
-            Text(stringResource(R.string.following_count, user.following ?: 0))
+fun ProfileScreen(
+    viewModel: GithubViewerViewModel,
+    onNavigateToReposScreen: (item: Repository) -> Unit,
+) {
+    val user = viewModel.userResponse.value!!.data!!
+    Column {
+        Row(modifier = Modifier.padding(top = 10.dp, start = 10.dp)) {
+            AsyncImage(
+                model = user.avatarURL,
+                contentDescription = stringResource(R.string.user_avatar),
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+            )
+            Column(verticalArrangement = Arrangement.Top) {
+                Text("${user.name}")
+                Text(stringResource(R.string.followers_count, user.followersCount))
+                Text(stringResource(R.string.following_count, user.followingCount))
+            }
+        }
+
+        when (val repos = viewModel.userRepos.observeAsState()?.value) {
+            is NetworkResult.Error -> {
+                repos.message
+            }
+
+            is NetworkResult.Success<List<Repository>> -> {
+                repos.data?.let {
+                    ItemList(it, onNavigateToReposScreen)
+                }
+            }
+
+            is NetworkResult.Loading -> {}
+
+            else -> {}
         }
     }
 }
@@ -117,19 +133,8 @@ fun RepositoryScreen(
                 repos.message
             }
 
-            is NetworkResult.Success<List<UserRepositoriesResponseItem>> -> {
-                repos.data?.let {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(it[0].owner?.avatarUrl)
-                            .crossfade(true)
-                            .build(),
-                        placeholder = painterResource(R.drawable.ic_launcher_background),
-                        contentDescription = stringResource(R.string.app_name),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.clip(CircleShape)
-                    )
-                }
+            is NetworkResult.Success<List<Repository>> -> {
+               //TODO Implement repos list
             }
 
             is NetworkResult.Loading -> {}
@@ -141,7 +146,7 @@ fun RepositoryScreen(
 
 @Composable
 fun SearchScreen(
-    onNavigateToReposScreen: (item: UserRepositoriesResponseItem) -> Unit,
+    onNavigateToReposScreen: (item: Repository) -> Unit,
     viewModel: GithubViewerViewModel = koinViewModel()
 ) {
     val state = remember {
@@ -158,7 +163,7 @@ fun SearchScreen(
                 repos.message
             }
 
-            is NetworkResult.Success<List<UserRepositoriesResponseItem>> -> {
+            is NetworkResult.Success<List<Repository>> -> {
                 repos.data?.let {
                     ItemList(it, onNavigateToReposScreen)
                 }

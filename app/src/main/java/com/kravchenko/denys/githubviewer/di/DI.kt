@@ -2,6 +2,8 @@ package com.kravchenko.denys.githubviewer.di
 
 import android.content.Context
 import com.kravchenko.denys.githubviewer.data.github.GithubRepository
+import com.kravchenko.denys.githubviewer.domain.GetRepositoriesUseCase
+import com.kravchenko.denys.githubviewer.domain.SignInUseCase
 import com.kravchenko.denys.githubviewer.network.GithubAPI
 import com.kravchenko.denys.githubviewer.network.SessionHolder
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
@@ -18,7 +20,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
     single { GithubRepository(get(), get()) }
-    single { GithubViewerViewModel(get()) }
+    single { GithubViewerViewModel(get(), get()) }
+    factory { GetRepositoriesUseCase(get()) }
+}
+
+val signInModule = module {
+    factory { SignInUseCase(get()) }
 }
 
 val networkModule = module {

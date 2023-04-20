@@ -30,7 +30,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kravchenko.denys.githubviewer.R
-import com.kravchenko.denys.githubviewer.model.UserRepositoriesResponseItem
+import com.kravchenko.denys.githubviewer.domain.model.Repository
 
 @Composable
 fun SearchView(state: MutableState<TextFieldValue>, onValueChange: (value: String) -> Unit) {
@@ -87,13 +87,13 @@ fun SearchView(state: MutableState<TextFieldValue>, onValueChange: (value: Strin
 
 @Composable
 fun ItemList(
-    repos: List<UserRepositoriesResponseItem>,
-    onClick: (item: UserRepositoriesResponseItem) -> Unit
+    repos: List<Repository>,
+    onClick: (item: Repository) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(repos) { index, item ->
             ItemListItem(
-                text = repos[index].fullName ?: "",
+                text = repos[index].name ?: "",
                 onItemClick = {
                     onClick(item)
                 }

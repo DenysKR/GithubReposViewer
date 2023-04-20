@@ -1,24 +1,19 @@
 package com.kravchenko.denys.githubviewer.network
 
-import retrofit2.Response
+import com.kravchenko.denys.githubviewer.data.github.GithubRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
-abstract class BaseApiResponse {
-    suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): NetworkResult<T> {
+abstract class BaseUseCase(protected val repository: GithubRepository) {
+    suspend fun <T> safeApiCall(apiCall: suspend () -> T) = flow {
+        emit(NetworkResult.Loading())
         try {
-            val response = apiCall()
-            if (response.isSuccessful) {
-                val body = response.body()
-                body?.let {
-                    return NetworkResult.Success(body)
-                }
-            }
-            return error("${response.code()} ${response.message()}")
+            val result = apiCall()
+            emit(NetworkResult.Success(result))
         } catch (e: Exception) {
             e.printStackTrace()
-            return error(e.message ?: e.toString())
+            NetworkResult.Error<Exception>("Api call failed ${e.message ?: "Somethins went wrong"}")
         }
-    }
-    private fun <T> error(errorMessage: String): NetworkResult<T> =
-        NetworkResult.Error("Api call failed $errorMessage")
-
+    }.flowOn(Dispatchers.IO)
 }

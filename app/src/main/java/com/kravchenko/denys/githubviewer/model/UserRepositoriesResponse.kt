@@ -74,7 +74,7 @@ data class UserRepositoriesResponseItem(
 	val license: License? = null,
 
 	@field:SerializedName("full_name")
-	val fullName: String? = null,
+	val fullName: String,
 
 	@field:SerializedName("size")
 	val size: Int? = null,

@@ -19,7 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kravchenko.denys.githubviewer.model.UserResponse
+import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
 import com.kravchenko.denys.githubviewer.ui.PROFILE_TAG
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                 user.message?.let { showToast(it) }
             }
 
-            is NetworkResult.Success<UserResponse> -> {
+            is NetworkResult.Success<User> -> {
                 navController.navigate(PROFILE_TAG) {
                     popUpTo(SIGN_IN_TAG) { inclusive = true }
                 }
@@ -116,7 +116,7 @@ class MainActivity : ComponentActivity() {
 
     private fun NavGraphBuilder.buildProfileScreen(viewModel: GithubViewerViewModel) =
         composable(PROFILE_TAG) {
-            ProfileScreen(viewModel)
+            ProfileScreen(viewModel, { TODO("Implement me") })
         }
 
     private fun NavGraphBuilder.buildRepositoryScreen() = composable(REPOSITORY_TAG) {
