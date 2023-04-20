@@ -6,4 +6,5 @@
     <string name="followers_count">Followers count: %1$s</string>
     <string name="following_count">Followings count: %1$s</string>
     <string name="github_token">Github token</string>
+    <string name="repositories">%1$s repositories</string>
 </resources>

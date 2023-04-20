@@ -1,9 +1,12 @@
 package com.kravchenko.denys.githubviewer.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -16,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.input.TextFieldValue
@@ -84,13 +88,18 @@ fun ProfileScreen(
     viewModel: GithubViewerViewModel,
     onNavigateToReposScreen: (item: Repository) -> Unit,
 ) {
-    val user = viewModel.userResponse.value!!.data!!
+    val user by remember {
+        mutableStateOf(viewModel.userResponse.value!!.data!!)
+    }
+
+    val padding = 10.dp
+
     Column {
-        Row(modifier = Modifier.padding(top = 10.dp, start = 10.dp)) {
+        Row(modifier = Modifier.padding(top = padding, start = padding)) {
             AsyncImage(
                 model = user.avatarURL,
                 contentDescription = stringResource(R.string.user_avatar),
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                modifier = Modifier.padding(start = padding, end = padding)
             )
             Column(verticalArrangement = Arrangement.Top) {
                 Text("${user.name}")
@@ -98,21 +107,20 @@ fun ProfileScreen(
                 Text(stringResource(R.string.following_count, user.followingCount))
             }
         }
-
-        when (val repos = viewModel.userRepos.observeAsState()?.value) {
-            is NetworkResult.Error -> {
-                repos.message
-            }
-
-            is NetworkResult.Success<List<Repository>> -> {
-                repos.data?.let {
-                    ItemList(it, onNavigateToReposScreen)
-                }
-            }
-
-            is NetworkResult.Loading -> {}
-
-            else -> {}
+        Text(
+            text = stringResource(R.string.repositories, user.name), fontStyle = Italic,
+            modifier = Modifier.padding(padding)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colorResource(id = R.color.purple_700))
+        ) {
+            ItemList(
+                Modifier.padding(horizontal = padding),
+                user.repos,
+                onNavigateToReposScreen
+            )
         }
     }
 }
@@ -134,7 +142,7 @@ fun RepositoryScreen(
             }
 
             is NetworkResult.Success<List<Repository>> -> {
-               //TODO Implement repos list
+                //TODO Implement repos list
             }
 
             is NetworkResult.Loading -> {}
@@ -165,7 +173,7 @@ fun SearchScreen(
 
             is NetworkResult.Success<List<Repository>> -> {
                 repos.data?.let {
-                    ItemList(it, onNavigateToReposScreen)
+                    ItemList(Modifier.padding(horizontal = 10.dp), it, onNavigateToReposScreen)
                 }
             }
 

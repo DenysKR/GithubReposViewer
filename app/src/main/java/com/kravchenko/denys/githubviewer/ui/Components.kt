@@ -1,6 +1,5 @@
 package com.kravchenko.denys.githubviewer.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,12 +23,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kravchenko.denys.githubviewer.R
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 
 @Composable
@@ -87,13 +84,14 @@ fun SearchView(state: MutableState<TextFieldValue>, onValueChange: (value: Strin
 
 @Composable
 fun ItemList(
+    modifier: Modifier,
     repos: List<Repository>,
     onClick: (item: Repository) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+    LazyColumn {
         itemsIndexed(repos) { index, item ->
-            ItemListItem(
-                text = repos[index].name ?: "",
+            ItemListItem(modifier,
+                text = repos[index].name,
                 onItemClick = {
                     onClick(item)
                 }
@@ -103,11 +101,10 @@ fun ItemList(
 }
 
 @Composable
-fun ItemListItem(text: String, onItemClick: (String) -> Unit) {
+fun ItemListItem(modifier: Modifier, text: String, onItemClick: (String) -> Unit) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clickable(onClick = { onItemClick(text) })
-            .background(colorResource(id = R.color.purple_700))
             .height(57.dp)
             .fillMaxWidth()
             .padding(PaddingValues(8.dp, 16.dp))

@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
@@ -58,10 +59,13 @@ class MainActivity : ComponentActivity() {
         NavHost(
             modifier = modifier, navController = navController, startDestination = startDestination
         ) {
+            val goToReposScreen: (item: Repository) -> Unit =
+                { navController.navigate(REPOSITORY_TAG) }
+
             buildSignInScreen(modifier, viewModel)
-            buildProfileScreen(viewModel)
+            buildProfileScreen(viewModel, goToReposScreen)
             buildRepositoryScreen()
-            buildSearchScreen(navController)
+            buildSearchScreen(goToReposScreen)
         }
 
         observeUserInfo(viewModel, navController)
@@ -114,19 +118,22 @@ class MainActivity : ComponentActivity() {
         })
     }
 
-    private fun NavGraphBuilder.buildProfileScreen(viewModel: GithubViewerViewModel) =
+    private fun NavGraphBuilder.buildProfileScreen(
+        viewModel: GithubViewerViewModel,
+        onNavigateToReposScreen: (item: Repository) -> Unit
+    ) =
         composable(PROFILE_TAG) {
-            ProfileScreen(viewModel, { TODO("Implement me") })
+            ProfileScreen(viewModel, onNavigateToReposScreen)
         }
 
     private fun NavGraphBuilder.buildRepositoryScreen() = composable(REPOSITORY_TAG) {
         RepositoryScreen()
     }
 
-    private fun NavGraphBuilder.buildSearchScreen(navController: NavHostController) =
+    private fun NavGraphBuilder.buildSearchScreen(onNavigateToReposScreen: (item: Repository) -> Unit) =
         composable(SEARCH_TAG) {
             SearchScreen(
-                onNavigateToReposScreen = { navController.navigate(SEARCH_TAG) },
+                onNavigateToReposScreen = onNavigateToReposScreen,
             )
         }
 
