@@ -64,9 +64,6 @@ data class UserRepositoriesResponseItem(
 	@field:SerializedName("statuses_url")
 	val statusesUrl: String? = null,
 
-	@field:SerializedName("full_name")
-	val fullName: String,
-
 	@field:SerializedName("size")
 	val size: Int? = null,
 
@@ -83,7 +80,7 @@ data class UserRepositoriesResponseItem(
 	val cloneUrl: String? = null,
 
 	@field:SerializedName("name")
-	val name: String? = null,
+	val name: String,
 
 	@field:SerializedName("pulls_url")
 	val pullsUrl: String? = null,

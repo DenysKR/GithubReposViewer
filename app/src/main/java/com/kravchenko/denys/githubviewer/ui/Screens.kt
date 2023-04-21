@@ -131,11 +131,14 @@ fun ProfileScreen(
 
 @Composable
 fun RepositoryScreen(
+    viewModel: GithubViewerViewModel,
     onContributorsClick: () -> Unit,
     onOwnerClick: () -> Unit,
     onStarUnStarClick: () -> Unit,
     screenModifier: Modifier = Modifier.fillMaxSize()
 ) {
+    val isRepoStarredByCurrentUser = viewModel.repoStarringResponse.observeAsState().value ?: false
+
     Column(
         modifier = screenModifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -151,7 +154,10 @@ fun RepositoryScreen(
         }
 
         Button(onClick = onStarUnStarClick) {
-            Text(text = stringResource(R.string.star))
+            Text(
+                text = if (isRepoStarredByCurrentUser) stringResource(R.string.unstar) else
+                    stringResource(R.string.unstar)
+            )
         }
     }
 }

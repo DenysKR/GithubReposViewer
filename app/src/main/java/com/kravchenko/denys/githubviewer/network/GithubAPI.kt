@@ -3,6 +3,7 @@ package com.kravchenko.denys.githubviewer.network
 import com.kravchenko.denys.githubviewer.model.UserRepositoriesResponseItem
 import com.kravchenko.denys.githubviewer.model.UserResponse
 import okhttp3.Interceptor.*
+import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -19,13 +20,14 @@ interface GithubAPI {
     suspend fun starRepo(
         @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
-    ): UserResponse
+    ): Response<Unit>
 
     @DELETE("/user/starred/{owner}/{repo}")
     suspend fun unStarRepo(
         @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
-    ): UserResponse
+    ): Response<Unit>
+
     @GET("/repos/{owner}/{repo}/stargazers")
     suspend fun fetchStargazers(
         @Path("owner") ownerName: String,

@@ -11,11 +11,11 @@ class GetRepositoriesUseCase(private val githubRepository: GithubRepository) :
         safeApiCall {
             repository.fetchUserRepos(username).map { repository ->
                 val stargazers =
-                    githubRepository.fetchRepoStargazers(username, repository.fullName).map {
+                    githubRepository.fetchRepoStargazers(username, repository.name).map {
                         it.toUser()
                     }
                 Repository(
-                    repository.fullName,
+                    repository.name,
                     stargazers = stargazers,
                     ownerName = username
                 )

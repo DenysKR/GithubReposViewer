@@ -23,6 +23,9 @@ class GithubViewerViewModel(
     private val _userResponse: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     val userResponse: MutableLiveData<NetworkResult<User>> = _userResponse
 
+    private val _repoStarringResponse: MutableLiveData<Boolean> = MutableLiveData()
+    val repoStarringResponse: MutableLiveData<Boolean> = _repoStarringResponse
+
     var selectedRepository: Repository? = null
 
     fun fetchUserRepos(userName: String) = viewModelScope.launch {
@@ -44,7 +47,13 @@ class GithubViewerViewModel(
     fun starRepo() = viewModelScope.launch {
         selectedRepository?.let { repo ->
             val ownerUsername = repo.ownerName
-            repositoriesUseCase.starRepo(ownerUsername, ownerUsername, repo).collect()
+            repositoriesUseCase.starRepo(ownerUsername, ownerUsername, repo).collect { status ->
+                _repoStarringResponse.value = when (status) {
+                    is NetworkResult.Success -> true
+                    is NetworkResult.Error -> false
+                    else -> false
+                }
+            }
         }
     }
 }

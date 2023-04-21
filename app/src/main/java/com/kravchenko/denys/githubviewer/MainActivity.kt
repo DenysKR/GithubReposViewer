@@ -143,7 +143,8 @@ class MainActivity : ComponentActivity() {
                 onOwnerClick = { navController.navigate(PROFILE_TAG) },
                 onStarUnStarClick = {
                     viewModel.starRepo()
-                })
+                }, viewModel = viewModel
+            )
         }
 
     private fun NavGraphBuilder.buildSearchScreen(onNavigateToReposScreen: (item: Repository) -> Unit) =

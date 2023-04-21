@@ -22,7 +22,7 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
                     followingCount = userData.following,
                     repos = userRepositories.map { repository ->
                         Repository(
-                            name = repository.fullName,
+                            name = repository.name,
                             ownerName = userName)
                     })
                 user
