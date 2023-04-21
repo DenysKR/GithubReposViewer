@@ -22,6 +22,8 @@ class GithubViewerViewModel(
     private val _userResponse: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     val userResponse: MutableLiveData<NetworkResult<User>> = _userResponse
 
+    val selectedRepository: Repository? = null
+
     fun fetchUserRepos(userName: String) = viewModelScope.launch {
         if (userName.length > 2)//At least 2 letters should be typed for starting search
             repositoriesUseCase.fetchUserRepositories(userName).collect { repositories ->

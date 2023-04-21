@@ -9,8 +9,8 @@ class GetRepositoriesUseCase(repository: GithubRepository) : BaseUseCase(reposit
     suspend fun fetchUserRepositories(username: String) =
         safeApiCall {
             repository.fetchUserRepos(username).map { repository ->
-                Repository(repository.fullName)
+                Repository(repository.fullName,
+                    contributorsUrl = repository.contributorsUrl, username)
             }
         }
-
 }

@@ -13,14 +13,20 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
         safeApiCall {
             with(repository) {
                 val userData = fetchAuthenticatedUserInfo()
-                val userRepositories = fetchUserRepos(userData.login)
-                User(name = userData.name,
+                val userName = userData.login
+                val userRepositories = fetchUserRepos(userName)
+                val user = User(
+                    name = userData.name,
                     avatarURL = userData.avatarUrl,
                     followersCount = userData.followers,
                     followingCount = userData.following,
                     repos = userRepositories.map { repository ->
-                        Repository(repository.fullName)
+                        Repository(
+                            name = repository.fullName,
+                            contributorsUrl = repository.contributorsUrl,
+                            ownerName = userName)
                     })
+                user
             }
         }
 }

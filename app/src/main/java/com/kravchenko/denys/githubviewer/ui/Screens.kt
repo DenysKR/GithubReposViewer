@@ -1,6 +1,5 @@
 package com.kravchenko.denys.githubviewer.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -133,7 +131,9 @@ fun ProfileScreen(
 
 @Composable
 fun RepositoryScreen(
-    viewModel: GithubViewerViewModel = koinViewModel(),
+    onContributorsClick: () -> Unit,
+    onOwnerClick: () -> Unit,
+    onStarUnstarClick: () -> Unit,
     screenModifier: Modifier = Modifier.fillMaxSize()
 ) {
     Column(
@@ -142,18 +142,16 @@ fun RepositoryScreen(
         verticalArrangement = Arrangement.Center
     ) {
 
-        when (val repos = viewModel.userRepos.observeAsState()?.value) {
-            is NetworkResult.Error -> {
-                repos.message
-            }
+        Button(onClick = onContributorsClick) {
+            Text(text = stringResource(R.string.contributors))
+        }
 
-            is NetworkResult.Success<List<Repository>> -> {
-                //TODO Implement repos list
-            }
+        Button(onClick = onOwnerClick) {
+            Text(text = stringResource(R.string.owner))
+        }
 
-            is NetworkResult.Loading -> {}
-
-            else -> {}
+        Button(onClick = onStarUnstarClick) {
+            Text(text = stringResource(R.string.star))
         }
     }
 }

@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
             buildSignInScreen(modifier, viewModel)
             buildProfileScreen(viewModel, goToReposScreen)
-            buildRepositoryScreen()
+            buildRepositoryScreen(navController)
             buildSearchScreen(goToReposScreen)
         }
 
@@ -131,9 +131,12 @@ class MainActivity : ComponentActivity() {
             ProfileScreen(viewModel, onNavigateToReposScreen)
         }
 
-    private fun NavGraphBuilder.buildRepositoryScreen() = composable(REPOSITORY_TAG) {
-        RepositoryScreen()
-    }
+    private fun NavGraphBuilder.buildRepositoryScreen(navController: NavHostController) =
+        composable(REPOSITORY_TAG) {
+            RepositoryScreen(onContributorsClick = { navController.navigate(PROFILE_TAG) },
+                onOwnerClick = { navController.navigate(PROFILE_TAG) },
+                onStarUnstarClick = {})
+        }
 
     private fun NavGraphBuilder.buildSearchScreen(onNavigateToReposScreen: (item: Repository) -> Unit) =
         composable(SEARCH_TAG) {
