@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -78,17 +79,19 @@ class MainActivity : ComponentActivity() {
     ) {
         when (val user = viewModel.userResponse.observeAsState()?.value) {
             is NetworkResult.Error -> {
+                showProgress(false)
                 user.message?.let { showToast(it) }
             }
 
             is NetworkResult.Success<User> -> {
+                showProgress(false)
                 navController.navigate(PROFILE_TAG) {
                     popUpTo(SIGN_IN_TAG) { inclusive = true }
                 }
             }
 
             is NetworkResult.Loading -> {
-                showProgress()
+                showProgress(true)
             }
 
             else -> {}
@@ -96,17 +99,19 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun showProgress() {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            CircularProgressIndicator()
-        }
+    private fun showProgress(show: Boolean) {
+        if (show)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator()
+            }
     }
 
+    @Composable
     private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(LocalContext.current, message, Toast.LENGTH_LONG).show()
     }
 
     private fun NavGraphBuilder.buildSignInScreen(

@@ -1,5 +1,6 @@
 package com.kravchenko.denys.githubviewer.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
@@ -40,6 +44,7 @@ const val SEARCH_TAG = "SearchScreen"
 
 private const val enableSignInThreshold = 2
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInScreen(
     screenModifier: Modifier,
@@ -48,6 +53,7 @@ fun SignInScreen(
 ) {
     var githubToken by remember { mutableStateOf(githubToken) }
     var clickButtonState by remember { mutableStateOf(githubToken.isNotBlank()) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = screenModifier.padding(horizontal = 10.dp),
@@ -71,9 +77,9 @@ fun SignInScreen(
                 placeholder = { Text(stringResource(R.string.type_github_token)) },
                 singleLine = true
             )
-
             Button(
                 onClick = {
+                    keyboardController?.hide()
                     onClick(githubToken)
                 }, enabled = clickButtonState
             ) {

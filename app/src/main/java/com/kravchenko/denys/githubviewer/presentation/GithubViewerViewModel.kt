@@ -16,12 +16,10 @@ class GithubViewerViewModel(
     private val repositoriesUseCase: GetRepositoriesUseCase
 ) : ViewModel() {
 
-    private val _userRepos: MutableLiveData<NetworkResult<List<Repository>>> =
-        MutableLiveData()
+    private val _userRepos: MutableLiveData<NetworkResult<List<Repository>>> = MutableLiveData()
     val userRepos: LiveData<NetworkResult<List<Repository>>> = _userRepos
 
-    private val _userResponse: MutableLiveData<NetworkResult<User>> =
-        MutableLiveData()
+    private val _userResponse: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     val userResponse: MutableLiveData<NetworkResult<User>> = _userResponse
 
     fun fetchUserRepos(userName: String) = viewModelScope.launch {

@@ -13,7 +13,7 @@ abstract class BaseUseCase(protected val repository: GithubRepository) {
             emit(NetworkResult.Success(result))
         } catch (e: Exception) {
             e.printStackTrace()
-            NetworkResult.Error<Exception>("Api call failed ${e.message ?: "Somethins went wrong"}")
+            emit(NetworkResult.Error("Api call failed ${e.message ?: "Something went wrong"}"))
         }
     }.flowOn(Dispatchers.IO)
 }
