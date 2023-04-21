@@ -9,6 +9,7 @@ import com.kravchenko.denys.githubviewer.domain.SignInUseCase
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class GithubViewerViewModel(
@@ -22,7 +23,7 @@ class GithubViewerViewModel(
     private val _userResponse: MutableLiveData<NetworkResult<User>> = MutableLiveData()
     val userResponse: MutableLiveData<NetworkResult<User>> = _userResponse
 
-    val selectedRepository: Repository? = null
+    var selectedRepository: Repository? = null
 
     fun fetchUserRepos(userName: String) = viewModelScope.launch {
         if (userName.length > 2)//At least 2 letters should be typed for starting search
@@ -37,6 +38,13 @@ class GithubViewerViewModel(
             fetchUserInfo().collect { user ->
                 _userResponse.value = user
             }
+        }
+    }
+
+    fun starRepo() = viewModelScope.launch {
+        selectedRepository?.let { repo ->
+            val ownerUsername = repo.ownerName
+            repositoriesUseCase.starRepo(ownerUsername, ownerUsername, repo).collect()
         }
     }
 }

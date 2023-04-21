@@ -60,12 +60,15 @@ class MainActivity : ComponentActivity() {
         NavHost(
             modifier = modifier, navController = navController, startDestination = startDestination
         ) {
-            val goToReposScreen: (item: Repository) -> Unit =
-                { navController.navigate(REPOSITORY_TAG) }
+            val goToReposScreen: (repo: Repository) -> Unit =
+                { repo ->
+                    viewModel.selectedRepository = repo
+                    navController.navigate(REPOSITORY_TAG)
+                }
 
             buildSignInScreen(modifier, viewModel)
             buildProfileScreen(viewModel, goToReposScreen)
-            buildRepositoryScreen(navController)
+            buildRepositoryScreen(navController, viewModel)
             buildSearchScreen(goToReposScreen)
         }
 
@@ -131,11 +134,16 @@ class MainActivity : ComponentActivity() {
             ProfileScreen(viewModel, onNavigateToReposScreen)
         }
 
-    private fun NavGraphBuilder.buildRepositoryScreen(navController: NavHostController) =
+    private fun NavGraphBuilder.buildRepositoryScreen(
+        navController: NavHostController,
+        viewModel: GithubViewerViewModel,
+    ) =
         composable(REPOSITORY_TAG) {
             RepositoryScreen(onContributorsClick = { navController.navigate(PROFILE_TAG) },
                 onOwnerClick = { navController.navigate(PROFILE_TAG) },
-                onStarUnstarClick = {})
+                onStarUnStarClick = {
+                    viewModel.starRepo()
+                })
         }
 
     private fun NavGraphBuilder.buildSearchScreen(onNavigateToReposScreen: (item: Repository) -> Unit) =

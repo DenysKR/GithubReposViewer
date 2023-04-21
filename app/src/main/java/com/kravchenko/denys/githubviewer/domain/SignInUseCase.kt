@@ -23,7 +23,6 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
                     repos = userRepositories.map { repository ->
                         Repository(
                             name = repository.fullName,
-                            contributorsUrl = repository.contributorsUrl,
                             ownerName = userName)
                     })
                 user

@@ -4,13 +4,31 @@ import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.network.BaseUseCase
 
-class GetRepositoriesUseCase(repository: GithubRepository) : BaseUseCase(repository) {
+class GetRepositoriesUseCase(private val githubRepository: GithubRepository) :
+    BaseUseCase(githubRepository) {
 
     suspend fun fetchUserRepositories(username: String) =
         safeApiCall {
             repository.fetchUserRepos(username).map { repository ->
-                Repository(repository.fullName,
-                    contributorsUrl = repository.contributorsUrl, username)
+                val stargazers =
+                    githubRepository.fetchRepoStargazers(username, repository.fullName).map {
+                        it.toUser()
+                    }
+                Repository(
+                    repository.fullName,
+                    stargazers = stargazers,
+                    ownerName = username
+                )
             }
+        }
+
+    suspend fun starRepo(stargazerUsername: String, ownerUsername: String, repo: Repository) =
+        safeApiCall {
+            val isRepoStarredByUser =
+                repo.stargazers?.findLast { it.name == stargazerUsername } != null
+            if (isRepoStarredByUser)
+                repository.unStarRepo(ownerUsername, repo.name)
+            else
+                repository.starRepo(ownerUsername, repo.name)
         }
 }

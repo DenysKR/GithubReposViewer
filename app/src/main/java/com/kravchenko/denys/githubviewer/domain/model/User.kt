@@ -11,6 +11,7 @@ data class User(
 
 data class Repository(
     val name: String,
-    val contributorsUrl: String? = null,
+    val stargazers: List<User>? = null,
+    val contributors: List<User>? = null,
     val ownerName: String
 )

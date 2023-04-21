@@ -133,7 +133,7 @@ fun ProfileScreen(
 fun RepositoryScreen(
     onContributorsClick: () -> Unit,
     onOwnerClick: () -> Unit,
-    onStarUnstarClick: () -> Unit,
+    onStarUnStarClick: () -> Unit,
     screenModifier: Modifier = Modifier.fillMaxSize()
 ) {
     Column(
@@ -150,7 +150,7 @@ fun RepositoryScreen(
             Text(text = stringResource(R.string.owner))
         }
 
-        Button(onClick = onStarUnstarClick) {
+        Button(onClick = onStarUnStarClick) {
             Text(text = stringResource(R.string.star))
         }
     }
