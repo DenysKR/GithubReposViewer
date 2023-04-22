@@ -198,7 +198,13 @@ fun SearchScreen(
 
             is NetworkResult.Success<List<Repository>> -> {
                 repos.data?.let {
-                    ItemList(Modifier.padding(horizontal = 10.dp), it, onNavigateToReposScreen)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(colorResource(id = R.color.purple_700))
+                    ) {
+                        ItemList(Modifier.padding(horizontal = 10.dp), it, onNavigateToReposScreen)
+                    }
                 }
             }
 
