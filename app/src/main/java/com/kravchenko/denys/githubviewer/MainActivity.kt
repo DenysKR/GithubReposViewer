@@ -67,9 +67,11 @@ class MainActivity : ComponentActivity() {
                 }
 
             buildSignInScreen(modifier, viewModel)
-            buildProfileScreen(viewModel, goToReposScreen)
+            buildProfileScreen(viewModel, goToReposScreen) {
+                navController.navigate(SEARCH_TAG)
+            }
             buildRepositoryScreen(navController, viewModel)
-            buildSearchScreen(goToReposScreen)
+            buildSearchScreen(goToReposScreen, viewModel)
         }
 
         observeUserInfo(viewModel, navController)
@@ -128,10 +130,13 @@ class MainActivity : ComponentActivity() {
 
     private fun NavGraphBuilder.buildProfileScreen(
         viewModel: GithubViewerViewModel,
-        onNavigateToReposScreen: (item: Repository) -> Unit
+        onNavigateToReposScreen: (item: Repository) -> Unit,
+        onSearchClicked: () -> Unit
     ) =
         composable(PROFILE_TAG) {
-            ProfileScreen(viewModel, onNavigateToReposScreen)
+            ProfileScreen(viewModel, onNavigateToReposScreen) {
+                onSearchClicked()
+            }
         }
 
     private fun NavGraphBuilder.buildRepositoryScreen(
@@ -139,7 +144,8 @@ class MainActivity : ComponentActivity() {
         viewModel: GithubViewerViewModel,
     ) =
         composable(REPOSITORY_TAG) {
-            RepositoryScreen(onContributorsClick = { navController.navigate(PROFILE_TAG) },
+            RepositoryScreen(
+                onContributorsClick = { navController.navigate(PROFILE_TAG) },
                 onOwnerClick = { navController.navigate(PROFILE_TAG) },
                 onStarUnStarClick = {
                     viewModel.starRepo()
@@ -147,10 +153,14 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-    private fun NavGraphBuilder.buildSearchScreen(onNavigateToReposScreen: (item: Repository) -> Unit) =
+    private fun NavGraphBuilder.buildSearchScreen(
+        onNavigateToReposScreen: (item: Repository) -> Unit,
+        viewModel: GithubViewerViewModel
+    ) =
         composable(SEARCH_TAG) {
             SearchScreen(
                 onNavigateToReposScreen = onNavigateToReposScreen,
+                viewModel
             )
         }
 

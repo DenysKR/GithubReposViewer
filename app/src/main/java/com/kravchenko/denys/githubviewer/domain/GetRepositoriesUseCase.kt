@@ -25,7 +25,7 @@ class GetRepositoriesUseCase(private val githubRepository: GithubRepository) :
     suspend fun starRepo(stargazerUsername: String, ownerUsername: String, repo: Repository) =
         safeApiCall {
             val isRepoStarredByUser =
-                repo.stargazers?.findLast { it.name == stargazerUsername } != null
+                repo.stargazers?.findLast { it?.name == stargazerUsername } != null
             if (isRepoStarredByUser)
                 repository.unStarRepo(ownerUsername, repo.name)
             else

@@ -1,6 +1,7 @@
 package com.kravchenko.denys.githubviewer.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,14 +9,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -33,7 +39,7 @@ import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
 import com.kravchenko.denys.githubviewer.ui.components.ItemList
 import com.kravchenko.denys.githubviewer.ui.components.SearchView
-import org.koin.androidx.compose.koinViewModel
+import kotlinx.coroutines.launch
 
 const val PROFILE_TAG = "ProfileScreen"
 const val SIGN_IN_TAG = "SignInScreen"
@@ -91,6 +97,7 @@ fun SignInScreen(
 fun ProfileScreen(
     viewModel: GithubViewerViewModel,
     onNavigateToReposScreen: (item: Repository) -> Unit,
+    onSearchClicked: () -> Unit,
 ) {
     val user by remember {
         mutableStateOf(viewModel.userResponse.value!!.data!!)
@@ -99,6 +106,14 @@ fun ProfileScreen(
     val padding = 10.dp
 
     Column {
+        Icon(
+            Icons.Default.Search,
+            contentDescription = "",
+            modifier = Modifier
+                .padding(15.dp)
+                .size(24.dp)
+                .clickable { onSearchClicked.invoke() }
+        )
         Row(modifier = Modifier.padding(top = padding, start = padding)) {
             AsyncImage(
                 model = user.avatarURL,
@@ -165,7 +180,7 @@ fun RepositoryScreen(
 @Composable
 fun SearchScreen(
     onNavigateToReposScreen: (item: Repository) -> Unit,
-    viewModel: GithubViewerViewModel = koinViewModel()
+    viewModel: GithubViewerViewModel
 ) {
     val state = remember {
         mutableStateOf(TextFieldValue(""))

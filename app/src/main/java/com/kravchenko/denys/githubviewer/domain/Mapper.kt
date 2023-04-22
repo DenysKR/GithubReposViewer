@@ -4,8 +4,9 @@ import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.model.UserResponse
 
 fun UserResponse.toUser(): User = User(
-    name = name,
+    name = name ?: "",
     avatarURL = avatarUrl,
     followersCount = followers,
-    followingCount = following,)
+    followingCount = following,
+)
 
