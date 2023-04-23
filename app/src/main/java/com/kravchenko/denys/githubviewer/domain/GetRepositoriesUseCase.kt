@@ -4,7 +4,7 @@ import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.network.BaseUseCase
 
-class GetRepositoriesUseCase(val repository: GithubRepository) :
+class GetRepositoriesUseCase(private val repository: GithubRepository) :
     BaseUseCase(repository) {
 
     suspend fun fetchUserRepositories(username: String) =

@@ -8,6 +8,7 @@ buildscript {
         compose_nav_version = '2.5.3'
         compose_runtime_version = '1.4.1'
         coil_version = '2.3.0'
+        mockk_version = '1.13.5'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
