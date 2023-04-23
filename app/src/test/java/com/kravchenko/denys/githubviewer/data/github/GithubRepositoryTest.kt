@@ -45,34 +45,77 @@ class GithubRepositoryTest {
     }
 
     @Test
-    fun fetchRepoStargazers() {
+    fun fetchRepoStargazers() = runTest {
+        val repoStargazersMock = listOf(mockk<UserResponse>())
+
+        val userName = "TestUser"
+        val repoName = "RepoUser"
+
+        coEvery { githubAPI.fetchStargazers(userName, repoName) } returns repoStargazersMock
+
+        val repoStargazers = repository.fetchRepoStargazers(userName, repoName)
+
+        Assertions.assertEquals(repoStargazers, repoStargazersMock)
     }
 
     @Test
-    fun fetchRepoContributors() {
+    fun fetchRepoContributors() = runTest {
+        val contributorsMock = listOf(mockk<UserResponse>())
+
+        val userName = "TestUser"
+        val repoName = "RepoUser"
+
+        coEvery { githubAPI.fetchContributors(userName, repoName) } returns contributorsMock
+
+        val repoRepoContributors = repository.fetchRepoContributors(userName, repoName)
+
+        Assertions.assertEquals(repoRepoContributors, contributorsMock)
     }
 
     @Test
-    fun fetchAuthenticatedUserInfo() {
+    fun fetchAuthenticatedUserInfo() = runTest {
+        val currentUserMock = mockk<UserResponse>()
+
+        coEvery { githubAPI.fetchCurrentUser() } returns currentUserMock
+
+        val currentUserInfo = repository.fetchAuthenticatedUserInfo()
+
+        Assertions.assertEquals(currentUserInfo, currentUserMock)
     }
 
     @Test
-    fun fetchFollowing() {
+    fun fetchFollowing() = runTest {
+        val followingsMock = listOf(mockk<UserResponse>())
+        val userName = "TestUser"
+
+        coEvery { githubAPI.fetchFollowing(userName) } returns followingsMock
+
+        val followings = repository.fetchFollowing(userName)
+
+        Assertions.assertEquals(followings, followingsMock)
     }
 
     @Test
-    fun fetchFollowers() {
+    fun fetchFollowers() = runTest {
+        val followersMock = listOf(mockk<UserResponse>())
+        val userName = "TestUser"
+
+        coEvery { githubAPI.fetchFollowers(userName) } returns followersMock
+
+        val followers = repository.fetchFollowers(userName)
+
+        Assertions.assertEquals(followers, followersMock)
     }
 
     @Test
-    fun fetchUserInfo() {
-    }
+    fun fetchUserInfo() = runTest {
+        val userMock = mockk<UserResponse>()
+        val userName = "TestUser"
 
-    @Test
-    fun starRepo() {
-    }
+        coEvery { githubAPI.fetchUser(userName) } returns userMock
 
-    @Test
-    fun unStarRepo() {
+        val user = repository.fetchUserInfo(userName)
+
+        Assertions.assertEquals(user, userMock)
     }
 }
