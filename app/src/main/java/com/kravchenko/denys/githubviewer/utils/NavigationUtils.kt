@@ -20,8 +20,7 @@ import com.kravchenko.denys.githubviewer.ui.SignInScreen
 import com.kravchenko.denys.githubviewer.ui.USERS_TAG
 
 fun NavGraphBuilder.buildSignInScreen(
-    modifier: Modifier,
-    viewModel: GithubViewerViewModel
+    modifier: Modifier, viewModel: GithubViewerViewModel
 ) = composable(SIGN_IN_TAG) {
     SignInScreen(modifier, onClick = { token ->
         viewModel.signIn(token)
@@ -33,12 +32,16 @@ fun NavGraphBuilder.buildProfileScreen(
     onNavigateToReposScreen: (item: Repository) -> Unit,
     onSearchClicked: () -> Unit,
     onFollowersClicked: () -> Unit,
-    onFollowingClicked: () -> Unit
+    onFollowingClicked: () -> Unit,
+    onLogout: () -> Unit
 ) = composable(PROFILE_TAG) {
     ProfileScreen(
-        viewModel, onNavigateToReposScreen, onSearchClicked =
-        onSearchClicked, onFollowersClicked = onFollowersClicked,
-        onFollowingsClicked = onFollowingClicked
+        viewModel,
+        onNavigateToReposScreen,
+        onSearchClicked = onSearchClicked,
+        onFollowersClicked = onFollowersClicked,
+        onFollowingsClicked = onFollowingClicked,
+        onLogout = onLogout
     )
 }
 
@@ -46,26 +49,21 @@ fun NavGraphBuilder.buildRepositoryScreen(
     navController: NavHostController,
     viewModel: GithubViewerViewModel,
 ) = composable(REPOSITORY_TAG) {
-    RepositoryScreen(
-        onContributorsClick = {
-            navController.navigate(CONTRIBUTORS_TAG)
-        },
-        onOwnerClick = {
-            viewModel.fetchUserInfo(viewModel.selectedRepository!!.ownerName)
-        },
-        onStarUnStarClick = {
-            viewModel.starRepo()
-        }, viewModel = viewModel
+    RepositoryScreen(onContributorsClick = {
+        navController.navigate(CONTRIBUTORS_TAG)
+    }, onOwnerClick = {
+        viewModel.fetchUserInfo(viewModel.selectedRepository!!.ownerName)
+    }, onStarUnStarClick = {
+        viewModel.starRepo()
+    }, viewModel = viewModel
     )
 }
 
 fun NavGraphBuilder.buildSearchScreen(
-    onNavigateToReposScreen: (item: Repository) -> Unit,
-    viewModel: GithubViewerViewModel
+    onNavigateToReposScreen: (item: Repository) -> Unit, viewModel: GithubViewerViewModel
 ) = composable(SEARCH_TAG) {
     SearchScreen(
-        onNavigateToReposScreen = onNavigateToReposScreen,
-        viewModel
+        onNavigateToReposScreen = onNavigateToReposScreen, viewModel
     )
 }
 

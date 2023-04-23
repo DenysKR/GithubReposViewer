@@ -101,6 +101,7 @@ fun ProfileScreen(
     onSearchClicked: () -> Unit,
     onFollowersClicked: () -> Unit,
     onFollowingsClicked: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     viewModel.userResponse.value?.data?.let { user ->
 
@@ -152,6 +153,19 @@ fun ProfileScreen(
                     user.repos,
                     onNavigateToReposScreen
                 )
+            }
+            Row(
+                Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    onClick = onLogout
+                ) {
+                    Text(text = stringResource(R.string.logout))
+                }
             }
         }
     }

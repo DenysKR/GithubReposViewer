@@ -7,6 +7,9 @@ class GithubRepository(private val api: GithubAPI, private val sessionHolder: Se
     fun saveAuthToken(token: String) {
         sessionHolder.githubUserToken = token
     }
+    fun clearAuthToken() {
+        sessionHolder.githubUserToken = null
+    }
 
     suspend fun fetchUserRepos(userName: String) = api.getUserRepos(userName)
     suspend fun fetchRepoStargazers(ownerName: String, repoName: String) =

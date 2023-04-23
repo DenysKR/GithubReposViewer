@@ -5,7 +5,7 @@ import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.network.BaseUseCase
 
 //TODO Implement autologin
-class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
+class AuthUseCase(repository: GithubRepository) : BaseUseCase(repository) {
 
     fun saveAuthToken(token: String) = githubRepository.saveAuthToken(token)
 
@@ -60,4 +60,8 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
                 }
             }
         }
+
+    fun logout(){
+        githubRepository.clearAuthToken()
+    }
 }

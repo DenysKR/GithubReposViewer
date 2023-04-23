@@ -81,6 +81,13 @@ class MainActivity : ComponentActivity() {
                 },
                 onFollowingClicked = {
                     goToFollowersFollowingScreen(FFUSERS.FOLLOWINGS)
+                }, onLogout = {
+                    viewModel.logout()
+                    navController.navigate(SIGN_IN_TAG) {
+                        popUpTo(PROFILE_TAG) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
             buildRepositoryScreen(navController, viewModel)

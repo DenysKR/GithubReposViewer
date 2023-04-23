@@ -1,10 +1,9 @@
 package com.kravchenko.denys.githubviewer.di
 
 import android.content.Context
-import com.kravchenko.denys.githubviewer.BuildConfig
 import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.domain.GetRepositoriesUseCase
-import com.kravchenko.denys.githubviewer.domain.SignInUseCase
+import com.kravchenko.denys.githubviewer.domain.AuthUseCase
 import com.kravchenko.denys.githubviewer.network.GithubAPI
 import com.kravchenko.denys.githubviewer.network.SessionHolder
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
@@ -26,7 +25,7 @@ val appModule = module {
 }
 
 val signInModule = module {
-    factory { SignInUseCase(get()) }
+    factory { AuthUseCase(get()) }
 }
 
 val networkModule = module {

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kravchenko.denys.githubviewer.R
 import com.kravchenko.denys.githubviewer.domain.GetRepositoriesUseCase
-import com.kravchenko.denys.githubviewer.domain.SignInUseCase
+import com.kravchenko.denys.githubviewer.domain.AuthUseCase
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
@@ -17,7 +17,7 @@ enum class FFUSERS {
 }
 
 class GithubViewerViewModel(
-    private val signInUseCase: SignInUseCase,
+    private val authUseCase: AuthUseCase,
     private val repositoriesUseCase: GetRepositoriesUseCase
 ) : ViewModel() {
     var selectedRepository: Repository? = null
@@ -33,6 +33,10 @@ class GithubViewerViewModel(
 
     private var _followersFollowings: MutableLiveData<Pair<Int, List<User>>> = MutableLiveData()
     var followersFollowings: LiveData<Pair<Int, List<User>>> = _followersFollowings
+
+    fun logout() {
+        authUseCase.logout()
+    }
 
     fun updateFollowersFollowings(users: FFUSERS) {
         when (users) {
@@ -56,13 +60,13 @@ class GithubViewerViewModel(
     }
 
     fun fetchUserInfo(userName: String) = viewModelScope.launch {
-        signInUseCase.fetchUserInfo(userName).collect { user ->
+        authUseCase.fetchUserInfo(userName).collect { user ->
             _userResponse.value = user
         }
     }
 
     fun signIn(token: String) = viewModelScope.launch {
-        with(signInUseCase) {
+        with(authUseCase) {
             saveAuthToken(token)
             fetchCurrentUserInfo().collect { user ->
                 _userResponse.value = user
