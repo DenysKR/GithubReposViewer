@@ -48,6 +48,7 @@ const val SIGN_IN_TAG = "SignInScreen"
 const val REPOSITORY_TAG = "RepositoryScreen"
 const val SEARCH_TAG = "SearchScreen"
 const val USERS_TAG = "UsersScreen"
+const val CONTRIBUTORS_TAG = "ContributorsScreen"
 
 private const val enableSignInThreshold = 2
 
@@ -160,10 +161,27 @@ fun ProfileScreen(
 }
 
 @Composable
-fun UsersScreen(
+fun FollowersFollowingsScreen(
     viewModel: GithubViewerViewModel
 ) {
     val users = viewModel.followersFollowings.observeAsState().value!!
+    buildUsersScreen(users)
+}
+@Composable
+fun ContributorsScreen(
+    viewModel: GithubViewerViewModel
+) {
+    val contributorsState by remember {
+        mutableStateOf(viewModel.selectedRepository?.contributors)
+    }
+    contributorsState?.let {
+        val screenData = Pair(R.string.contributors, it)
+        buildUsersScreen(screenData)
+    }
+}
+
+@Composable
+private fun buildUsersScreen(users: Pair<Int, List<User>>) {
     val title = users.first
     val usersState = users.second
 

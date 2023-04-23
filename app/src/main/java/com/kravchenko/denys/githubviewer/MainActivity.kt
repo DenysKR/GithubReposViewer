@@ -25,7 +25,9 @@ import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.FFUSERS
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
-import com.kravchenko.denys.githubviewer.ui.UsersScreen
+import com.kravchenko.denys.githubviewer.ui.CONTRIBUTORS_TAG
+import com.kravchenko.denys.githubviewer.ui.ContributorsScreen
+import com.kravchenko.denys.githubviewer.ui.FollowersFollowingsScreen
 import com.kravchenko.denys.githubviewer.ui.PROFILE_TAG
 import com.kravchenko.denys.githubviewer.ui.ProfileScreen
 import com.kravchenko.denys.githubviewer.ui.REPOSITORY_TAG
@@ -89,6 +91,7 @@ class MainActivity : ComponentActivity() {
             buildRepositoryScreen(navController, viewModel)
             buildSearchScreen(goToReposScreen, viewModel)
             buildUsersListScreen(viewModel)
+            buildContributorsListScreen(viewModel)
         }
 
         observeUserInfo(viewModel, navController)
@@ -177,7 +180,7 @@ class MainActivity : ComponentActivity() {
     ) = composable(REPOSITORY_TAG) {
         RepositoryScreen(
             onContributorsClick = {
-                navController.navigate(PROFILE_TAG)
+                navController.navigate(CONTRIBUTORS_TAG)
             },
             onOwnerClick = {
                 viewModel.fetchUserInfo(viewModel.selectedRepository!!.ownerName)
@@ -201,9 +204,12 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.buildUsersListScreen(
         viewModel: GithubViewerViewModel
     ) = composable(USERS_TAG) {
-        UsersScreen(viewModel)
+        FollowersFollowingsScreen(viewModel)
     }
 
+    private fun NavGraphBuilder.buildContributorsListScreen(viewModel: GithubViewerViewModel) = composable(CONTRIBUTORS_TAG) {
+        ContributorsScreen(viewModel)
+    }
 
     @Preview(showBackground = true)
     @Composable
