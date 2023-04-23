@@ -12,7 +12,11 @@ class GithubRepository(private val api: GithubAPI, private val sessionManager: S
     suspend fun fetchRepoStargazers(ownerName: String, repoName: String) =
         api.fetchStargazers(ownerName, repoName)
 
-    suspend fun fetchAuthenticatedUserInfo() = api.getUser()
+    suspend fun fetchRepoContributors(ownerName: String, repoName: String) =
+        api.fetchContributors(ownerName, repoName)
+
+    suspend fun fetchAuthenticatedUserInfo() = api.fetchCurrentUser()
+    suspend fun fetchUserInfo(name: String) = api.fetchUser(name)
     suspend fun starRepo(ownerName: String, repoName: String) = api.starRepo(ownerName, repoName)
     suspend fun unStarRepo(ownerName: String, repoName: String) =
         api.unStarRepo(ownerName, repoName)

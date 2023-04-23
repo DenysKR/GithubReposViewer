@@ -1,6 +1,7 @@
 package com.kravchenko.denys.githubviewer.di
 
 import android.content.Context
+import com.kravchenko.denys.githubviewer.BuildConfig
 import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.domain.GetRepositoriesUseCase
 import com.kravchenko.denys.githubviewer.domain.SignInUseCase
@@ -50,7 +51,7 @@ private fun provideRetrofit(context: Context, sessionHolder: SessionHolder): Ret
         chain.proceed(request)
     }
     var httpLoggingInterceptor = HttpLoggingInterceptor()
-        .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+        .setLevel(HttpLoggingInterceptor.Level.BASIC)
 
     var cacheInterceptor = Interceptor { chain ->
         var request = chain.request()

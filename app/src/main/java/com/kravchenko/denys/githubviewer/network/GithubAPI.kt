@@ -14,7 +14,7 @@ interface GithubAPI {
     suspend fun getUserRepos(@Path("user") user: String): List<UserRepositoriesResponseItem>
 
     @GET("/user")
-    suspend fun getUser(): UserResponse
+    suspend fun fetchCurrentUser(): UserResponse
 
     @PUT("/user/starred/{owner}/{repo}")
     suspend fun starRepo(
@@ -33,5 +33,16 @@ interface GithubAPI {
         @Path("owner") ownerName: String,
         @Path("repo") repoName: String,
     ): List<UserResponse>
+
+    @GET("/repos/{owner}/{repo}/contributors")
+    suspend fun fetchContributors(
+        @Path("owner") ownerName: String,
+        @Path("repo") repoName: String,
+    ): List<UserResponse>
+
+    @GET("/users/{name}")
+    suspend fun fetchUser(
+        @Path("name") ownerName: String,
+    ): UserResponse
 }
 

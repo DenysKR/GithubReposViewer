@@ -146,7 +146,9 @@ class MainActivity : ComponentActivity() {
         composable(REPOSITORY_TAG) {
             RepositoryScreen(
                 onContributorsClick = { navController.navigate(PROFILE_TAG) },
-                onOwnerClick = { navController.navigate(PROFILE_TAG) },
+                onOwnerClick = {
+                    viewModel.fetchUserInfo(viewModel.selectedRepository!!.ownerName)
+                },
                 onStarUnStarClick = {
                     viewModel.starRepo()
                 }, viewModel = viewModel

@@ -155,7 +155,7 @@ data class UserRepositoriesResponseItem(
 	val hasPages: Boolean? = null,
 
 	@field:SerializedName("owner")
-	val owner: UserResponse? = null,
+	val owner: UserResponse,
 
 	@field:SerializedName("commits_url")
 	val commitsUrl: String? = null,

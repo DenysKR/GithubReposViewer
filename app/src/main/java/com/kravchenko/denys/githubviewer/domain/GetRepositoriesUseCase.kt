@@ -4,19 +4,25 @@ import com.kravchenko.denys.githubviewer.data.github.GithubRepository
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.network.BaseUseCase
 
-class GetRepositoriesUseCase(private val githubRepository: GithubRepository) :
-    BaseUseCase(githubRepository) {
+class GetRepositoriesUseCase(val repository: GithubRepository) :
+    BaseUseCase(repository) {
 
     suspend fun fetchUserRepositories(username: String) =
         safeApiCall {
             repository.fetchUserRepos(username).map { repository ->
                 val stargazers =
-                    githubRepository.fetchRepoStargazers(username, repository.name).map {
+                    this.repository.fetchRepoStargazers(username, repository.name).map {
+                        it.toUser()
+                    }
+
+                val contributors =
+                    this.repository.fetchRepoContributors(username, repository.name).map {
                         it.toUser()
                     }
                 Repository(
                     repository.name,
                     stargazers = stargazers,
+                    contributors = contributors,
                     ownerName = username
                 )
             }

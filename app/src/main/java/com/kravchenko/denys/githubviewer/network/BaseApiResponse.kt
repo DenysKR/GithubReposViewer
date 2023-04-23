@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-abstract class BaseUseCase(protected val repository: GithubRepository) {
+abstract class BaseUseCase(protected val githubRepository: GithubRepository) {
     suspend fun <T> safeApiCall(apiCall: suspend () -> T) = flow {
         emit(NetworkResult.Loading())
         try {
