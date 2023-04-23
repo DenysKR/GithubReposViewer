@@ -13,7 +13,7 @@ data class UserResponse(
     val reposUrl: String? = null,
 
     @field:SerializedName("following_url")
-    val followingUrl: String? = null,
+    val followings: String? = null,
 
     @field:SerializedName("twitter_username")
     val twitterUsername: Any? = null,

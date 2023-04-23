@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kravchenko.denys.githubviewer.R
 import com.kravchenko.denys.githubviewer.domain.GetRepositoriesUseCase
 import com.kravchenko.denys.githubviewer.domain.SignInUseCase
 import com.kravchenko.denys.githubviewer.domain.model.Repository
@@ -11,21 +12,41 @@ import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import kotlinx.coroutines.launch
 
+enum class FFUSERS {
+    FOLLOWERS, FOLLOWINGS
+}
+
 class GithubViewerViewModel(
     private val signInUseCase: SignInUseCase,
     private val repositoriesUseCase: GetRepositoriesUseCase
 ) : ViewModel() {
+    var selectedRepository: Repository? = null
 
     private val _userRepos: MutableLiveData<NetworkResult<List<Repository>>> = MutableLiveData()
     val userRepos: LiveData<NetworkResult<List<Repository>>> = _userRepos
 
     private val _userResponse: MutableLiveData<NetworkResult<User>> = MutableLiveData()
-    val userResponse: MutableLiveData<NetworkResult<User>> = _userResponse
+    val userResponse: LiveData<NetworkResult<User>> = _userResponse
 
     private val _repoStarringResponse: MutableLiveData<Boolean> = MutableLiveData()
-    val repoStarringResponse: MutableLiveData<Boolean> = _repoStarringResponse
+    val repoStarringResponse: LiveData<Boolean> = _repoStarringResponse
 
-    var selectedRepository: Repository? = null
+    private var _followersFollowings: MutableLiveData<Pair<Int, List<User>>> = MutableLiveData()
+    var followersFollowings: LiveData<Pair<Int, List<User>>> = _followersFollowings
+
+    fun updateFollowersFollowings(users: FFUSERS) {
+        when (users) {
+            FFUSERS.FOLLOWERS -> {
+                val ffUsers = userResponse.value?.data?.followers ?: emptyList()
+                _followersFollowings.value = Pair(R.string.followers, ffUsers)
+            }
+
+            FFUSERS.FOLLOWINGS -> {
+                val ffUsers = userResponse.value?.data?.following ?: emptyList()
+                _followersFollowings.value = Pair(R.string.following, ffUsers)
+            }
+        }
+    }
 
     fun fetchUserRepos(userName: String) = viewModelScope.launch {
         if (userName.length > 2)//At least 2 letters should be typed for starting search
@@ -35,10 +56,9 @@ class GithubViewerViewModel(
     }
 
     fun fetchUserInfo(userName: String) = viewModelScope.launch {
-        if (userName.length > 2)//At least 2 letters should be typed for starting search
-            signInUseCase.fetchUserInfo(userName).collect { user ->
-                _userResponse.value = user
-            }
+        signInUseCase.fetchUserInfo(userName).collect { user ->
+            _userResponse.value = user
+        }
     }
 
     fun signIn(token: String) = viewModelScope.launch {

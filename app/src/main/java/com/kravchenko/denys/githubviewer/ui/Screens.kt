@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -21,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -35,16 +36,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.kravchenko.denys.githubviewer.R
 import com.kravchenko.denys.githubviewer.domain.model.Repository
+import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
 import com.kravchenko.denys.githubviewer.ui.components.ItemList
+import com.kravchenko.denys.githubviewer.ui.components.ItemListItem
 import com.kravchenko.denys.githubviewer.ui.components.SearchView
-import kotlinx.coroutines.launch
 
 const val PROFILE_TAG = "ProfileScreen"
 const val SIGN_IN_TAG = "SignInScreen"
 const val REPOSITORY_TAG = "RepositoryScreen"
 const val SEARCH_TAG = "SearchScreen"
+const val USERS_TAG = "UsersScreen"
 
 private const val enableSignInThreshold = 2
 
@@ -98,36 +101,77 @@ fun ProfileScreen(
     viewModel: GithubViewerViewModel,
     onNavigateToReposScreen: (item: Repository) -> Unit,
     onSearchClicked: () -> Unit,
+    onFollowersClicked: () -> Unit,
+    onFollowingsClicked: () -> Unit,
 ) {
-    val user by remember {
-        mutableStateOf(viewModel.userResponse.value!!.data!!)
+    viewModel.userResponse.value?.data?.let { user ->
+
+        val user by remember {
+            mutableStateOf(user)
+        }
+
+        val padding = 10.dp
+
+        Column {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(15.dp)
+                    .size(24.dp)
+                    .clickable { onSearchClicked.invoke() }
+            )
+            Row(modifier = Modifier.padding(top = padding, start = padding)) {
+                AsyncImage(
+                    model = user.avatarURL,
+                    contentDescription = stringResource(R.string.user_avatar),
+                    modifier = Modifier.padding(start = padding, end = padding)
+                )
+                Column(verticalArrangement = Arrangement.Top) {
+                    Text("${user.name}")
+                    Text(
+                        stringResource(R.string.followers_count, user.followersCount),
+                        Modifier.clickable {
+                            onFollowersClicked()
+                        })
+                    Text(stringResource(R.string.following_count, user.followingCount),
+                        Modifier.clickable {
+                            onFollowingsClicked()
+                        })
+                }
+            }
+            Text(
+                text = stringResource(R.string.repositories, user.name), fontStyle = Italic,
+                modifier = Modifier.padding(padding)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorResource(id = R.color.purple_700))
+            ) {
+                ItemList(
+                    Modifier.padding(horizontal = padding),
+                    user.repos,
+                    onNavigateToReposScreen
+                )
+            }
+        }
     }
+}
+
+@Composable
+fun UsersScreen(
+    viewModel: GithubViewerViewModel
+) {
+    val users = viewModel.followersFollowings.observeAsState().value!!
+    val title = users.first
+    val usersState = users.second
 
     val padding = 10.dp
 
     Column {
-        Icon(
-            Icons.Default.Search,
-            contentDescription = "",
-            modifier = Modifier
-                .padding(15.dp)
-                .size(24.dp)
-                .clickable { onSearchClicked.invoke() }
-        )
-        Row(modifier = Modifier.padding(top = padding, start = padding)) {
-            AsyncImage(
-                model = user.avatarURL,
-                contentDescription = stringResource(R.string.user_avatar),
-                modifier = Modifier.padding(start = padding, end = padding)
-            )
-            Column(verticalArrangement = Arrangement.Top) {
-                Text("${user.name}")
-                Text(stringResource(R.string.followers_count, user.followersCount))
-                Text(stringResource(R.string.following_count, user.followingCount))
-            }
-        }
         Text(
-            text = stringResource(R.string.repositories, user.name), fontStyle = Italic,
+            text = stringResource(id = title), fontStyle = Italic,
             modifier = Modifier.padding(padding)
         )
         Box(
@@ -135,11 +179,14 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .background(colorResource(id = R.color.purple_700))
         ) {
-            ItemList(
-                Modifier.padding(horizontal = padding),
-                user.repos,
-                onNavigateToReposScreen
-            )
+            LazyColumn {
+                itemsIndexed(usersState) { index, _ ->
+                    ItemListItem(modifier = Modifier.fillMaxWidth(), text = usersState[index].name,
+                        onItemClick = {
+
+                        })
+                }
+            }
         }
     }
 }

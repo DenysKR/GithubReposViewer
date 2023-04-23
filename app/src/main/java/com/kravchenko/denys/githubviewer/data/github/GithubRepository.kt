@@ -16,6 +16,8 @@ class GithubRepository(private val api: GithubAPI, private val sessionManager: S
         api.fetchContributors(ownerName, repoName)
 
     suspend fun fetchAuthenticatedUserInfo() = api.fetchCurrentUser()
+    suspend fun fetchFollowing(name: String) = api.fetchFollowing(name)
+    suspend fun fetchFollowers(name: String) = api.fetchFollowers(name)
     suspend fun fetchUserInfo(name: String) = api.fetchUser(name)
     suspend fun starRepo(ownerName: String, repoName: String) = api.starRepo(ownerName, repoName)
     suspend fun unStarRepo(ownerName: String, repoName: String) =

@@ -14,6 +14,8 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
             with(githubRepository) {
                 val userData = fetchAuthenticatedUserInfo()
                 val userName = userData.login
+                val fllowers = fetchFollowers(userName)
+                val fllowing = fetchFollowing(userName)
                 val userRepositories = fetchUserRepos(userName)
                 userData.toUser().apply {
                     repos = userRepositories.map { repository ->
@@ -25,6 +27,8 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
                             repository.owner.login,
                             repository.name
                         )
+                        following = fllowing.map { it.toUser() }
+                        followers = fllowers.map { it.toUser() }
                         Repository(
                             name = repository.name,
                             ownerName = userName,
@@ -40,9 +44,13 @@ class SignInUseCase(repository: GithubRepository) : BaseUseCase(repository) {
         safeApiCall {
             with(githubRepository) {
                 val userData = fetchUserInfo(name)
+                val fllowers = fetchFollowers(name)
+                val fllowing = fetchFollowing(name)
                 val userName = userData.login
                 val userRepositories = fetchUserRepos(userName)
                 userData.toUser().apply {
+                    following = fllowing.map { it.toUser() }
+                    followers = fllowers.map { it.toUser() }
                     repos = userRepositories.map { repository ->
                         Repository(
                             name = repository.name,

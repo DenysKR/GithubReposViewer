@@ -5,7 +5,9 @@ data class User(
     val avatarURL: String? = null,
     val followersCount: Int = 0,
     val followingCount: Int = 0,
-    var repos: List<Repository> = emptyList()
+    var repos: List<Repository> = emptyList(),
+    var followers: List<User> = emptyList(),
+    var following: List<User> = emptyList(),
 )
 
 

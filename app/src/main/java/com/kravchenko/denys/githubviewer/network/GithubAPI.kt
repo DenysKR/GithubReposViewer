@@ -40,6 +40,16 @@ interface GithubAPI {
         @Path("repo") repoName: String,
     ): List<UserResponse>
 
+    @GET("/users/{user}/followers")
+    suspend fun fetchFollowers(
+        @Path("user") userName: String
+    ): List<UserResponse>
+
+    @GET("/users/{user}/following")
+    suspend fun fetchFollowing(
+        @Path("user") userName: String
+    ): List<UserResponse>
+
     @GET("/users/{name}")
     suspend fun fetchUser(
         @Path("name") ownerName: String,
