@@ -39,9 +39,6 @@ import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
-import com.kravchenko.denys.githubviewer.ui.components.ItemList
-import com.kravchenko.denys.githubviewer.ui.components.ItemListItem
-import com.kravchenko.denys.githubviewer.ui.components.SearchView
 
 const val PROFILE_TAG = "ProfileScreen"
 const val SIGN_IN_TAG = "SignInScreen"

@@ -1,43 +1,37 @@
 package com.kravchenko.denys.githubviewer
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kravchenko.denys.githubviewer.domain.model.Repository
 import com.kravchenko.denys.githubviewer.domain.model.User
 import com.kravchenko.denys.githubviewer.network.NetworkResult
 import com.kravchenko.denys.githubviewer.presentation.FFUSERS
 import com.kravchenko.denys.githubviewer.presentation.GithubViewerViewModel
-import com.kravchenko.denys.githubviewer.ui.CONTRIBUTORS_TAG
-import com.kravchenko.denys.githubviewer.ui.ContributorsScreen
-import com.kravchenko.denys.githubviewer.ui.FollowersFollowingsScreen
 import com.kravchenko.denys.githubviewer.ui.PROFILE_TAG
-import com.kravchenko.denys.githubviewer.ui.ProfileScreen
 import com.kravchenko.denys.githubviewer.ui.REPOSITORY_TAG
-import com.kravchenko.denys.githubviewer.ui.RepositoryScreen
 import com.kravchenko.denys.githubviewer.ui.SEARCH_TAG
 import com.kravchenko.denys.githubviewer.ui.SIGN_IN_TAG
-import com.kravchenko.denys.githubviewer.ui.SearchScreen
-import com.kravchenko.denys.githubviewer.ui.SignInScreen
 import com.kravchenko.denys.githubviewer.ui.USERS_TAG
+import com.kravchenko.denys.githubviewer.ui.showProgress
+import com.kravchenko.denys.githubviewer.ui.showToast
 import com.kravchenko.denys.githubviewer.ui.theme.GithubViewerTheme
+import com.kravchenko.denys.githubviewer.utils.buildContributorsListScreen
+import com.kravchenko.denys.githubviewer.utils.buildProfileScreen
+import com.kravchenko.denys.githubviewer.utils.buildRepositoryScreen
+import com.kravchenko.denys.githubviewer.utils.buildSearchScreen
+import com.kravchenko.denys.githubviewer.utils.buildSignInScreen
+import com.kravchenko.denys.githubviewer.utils.buildUsersListScreen
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -55,6 +49,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //TODO Handle back stack navigation
     @Composable
     fun GithubViewerNavHost(
         viewModel: GithubViewerViewModel = koinViewModel(),
@@ -134,83 +129,6 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-
-    @Composable
-    private fun showProgress(show: Boolean) {
-        if (show)
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                CircularProgressIndicator()
-            }
-    }
-
-    @Composable
-    private fun showToast(message: String) {
-        Toast.makeText(LocalContext.current, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun NavGraphBuilder.buildSignInScreen(
-        modifier: Modifier,
-        viewModel: GithubViewerViewModel
-    ) = composable(SIGN_IN_TAG) {
-        SignInScreen(modifier, onClick = { token ->
-            viewModel.signIn(token)
-        })
-    }
-
-    private fun NavGraphBuilder.buildProfileScreen(
-        viewModel: GithubViewerViewModel,
-        onNavigateToReposScreen: (item: Repository) -> Unit,
-        onSearchClicked: () -> Unit,
-        onFollowersClicked: () -> Unit,
-        onFollowingClicked: () -> Unit
-    ) = composable(PROFILE_TAG) {
-        ProfileScreen(
-            viewModel, onNavigateToReposScreen, onSearchClicked =
-            onSearchClicked, onFollowersClicked = onFollowersClicked,
-            onFollowingsClicked = onFollowingClicked
-        )
-    }
-
-    private fun NavGraphBuilder.buildRepositoryScreen(
-        navController: NavHostController,
-        viewModel: GithubViewerViewModel,
-    ) = composable(REPOSITORY_TAG) {
-        RepositoryScreen(
-            onContributorsClick = {
-                navController.navigate(CONTRIBUTORS_TAG)
-            },
-            onOwnerClick = {
-                viewModel.fetchUserInfo(viewModel.selectedRepository!!.ownerName)
-            },
-            onStarUnStarClick = {
-                viewModel.starRepo()
-            }, viewModel = viewModel
-        )
-    }
-
-    private fun NavGraphBuilder.buildSearchScreen(
-        onNavigateToReposScreen: (item: Repository) -> Unit,
-        viewModel: GithubViewerViewModel
-    ) = composable(SEARCH_TAG) {
-        SearchScreen(
-            onNavigateToReposScreen = onNavigateToReposScreen,
-            viewModel
-        )
-    }
-
-    private fun NavGraphBuilder.buildUsersListScreen(
-        viewModel: GithubViewerViewModel
-    ) = composable(USERS_TAG) {
-        FollowersFollowingsScreen(viewModel)
-    }
-
-    private fun NavGraphBuilder.buildContributorsListScreen(viewModel: GithubViewerViewModel) = composable(CONTRIBUTORS_TAG) {
-        ContributorsScreen(viewModel)
-    }
-
     @Preview(showBackground = true)
     @Composable
     fun DefaultPreview() {
