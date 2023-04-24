@@ -25,23 +25,25 @@ class GithubRepositoryTest {
     }
 
     @Test
-    fun saveAuthToken() {
+    fun manageAuthToken() {
         val testToken = "Token"
         repository.saveAuthToken(testToken)
         Assertions.assertEquals(testToken, sessionHolder.githubUserToken)
+        repository.clearAuthToken()
+        Assertions.assertNull(sessionHolder.githubUserToken)
     }
 
     @Test
     fun fetchUserRepos() = runTest {
-        val userMock = mockk<UserResponse>()
+        val userResponseMock = mockk<UserResponse>()
 
         val userName = "TestUser"
 
-        coEvery { githubAPI.fetchUser(userName) } returns userMock
+        coEvery { githubAPI.fetchUser(userName) } returns userResponseMock
 
         val userInfo = repository.fetchUserInfo(userName)
 
-        Assertions.assertEquals(userInfo, userMock)
+        Assertions.assertEquals(userInfo, userResponseMock)
     }
 
     @Test
@@ -49,7 +51,7 @@ class GithubRepositoryTest {
         val repoStargazersMock = listOf(mockk<UserResponse>())
 
         val userName = "TestUser"
-        val repoName = "RepoUser"
+        val repoName = "RepoName"
 
         coEvery { githubAPI.fetchStargazers(userName, repoName) } returns repoStargazersMock
 
@@ -63,7 +65,7 @@ class GithubRepositoryTest {
         val contributorsMock = listOf(mockk<UserResponse>())
 
         val userName = "TestUser"
-        val repoName = "RepoUser"
+        val repoName = "RepoName"
 
         coEvery { githubAPI.fetchContributors(userName, repoName) } returns contributorsMock
 
@@ -74,18 +76,19 @@ class GithubRepositoryTest {
 
     @Test
     fun fetchAuthenticatedUserInfo() = runTest {
-        val currentUserMock = mockk<UserResponse>()
+        val currentUserMockResponse = mockk<UserResponse>()
 
-        coEvery { githubAPI.fetchCurrentUser() } returns currentUserMock
+        coEvery { githubAPI.fetchCurrentUser() } returns currentUserMockResponse
 
         val currentUserInfo = repository.fetchAuthenticatedUserInfo()
 
-        Assertions.assertEquals(currentUserInfo, currentUserMock)
+        Assertions.assertEquals(currentUserInfo, currentUserMockResponse)
     }
 
     @Test
     fun fetchFollowing() = runTest {
         val followingsMock = listOf(mockk<UserResponse>())
+
         val userName = "TestUser"
 
         coEvery { githubAPI.fetchFollowing(userName) } returns followingsMock
@@ -98,6 +101,7 @@ class GithubRepositoryTest {
     @Test
     fun fetchFollowers() = runTest {
         val followersMock = listOf(mockk<UserResponse>())
+
         val userName = "TestUser"
 
         coEvery { githubAPI.fetchFollowers(userName) } returns followersMock
@@ -109,13 +113,14 @@ class GithubRepositoryTest {
 
     @Test
     fun fetchUserInfo() = runTest {
-        val userMock = mockk<UserResponse>()
+        val userResponseMock = mockk<UserResponse>()
+
         val userName = "TestUser"
 
-        coEvery { githubAPI.fetchUser(userName) } returns userMock
+        coEvery { githubAPI.fetchUser(userName) } returns userResponseMock
 
         val user = repository.fetchUserInfo(userName)
 
-        Assertions.assertEquals(user, userMock)
+        Assertions.assertEquals(user, userResponseMock)
     }
 }

@@ -26,7 +26,6 @@ fun NavGraphBuilder.buildSignInScreen(
         viewModel.signIn(token)
     })
 }
-
 fun NavGraphBuilder.buildProfileScreen(
     viewModel: GithubViewerViewModel,
     onNavigateToReposScreen: (item: Repository) -> Unit,
@@ -44,7 +43,6 @@ fun NavGraphBuilder.buildProfileScreen(
         onLogout = onLogout
     )
 }
-
 fun NavGraphBuilder.buildRepositoryScreen(
     navController: NavHostController,
     viewModel: GithubViewerViewModel,
@@ -58,7 +56,6 @@ fun NavGraphBuilder.buildRepositoryScreen(
     }, viewModel = viewModel
     )
 }
-
 fun NavGraphBuilder.buildSearchScreen(
     onNavigateToReposScreen: (item: Repository) -> Unit, viewModel: GithubViewerViewModel
 ) = composable(SEARCH_TAG) {
@@ -66,13 +63,11 @@ fun NavGraphBuilder.buildSearchScreen(
         onNavigateToReposScreen = onNavigateToReposScreen, viewModel
     )
 }
-
 fun NavGraphBuilder.buildUsersListScreen(
     viewModel: GithubViewerViewModel
 ) = composable(USERS_TAG) {
     FollowersFollowingsScreen(viewModel)
 }
-
 fun NavGraphBuilder.buildContributorsListScreen(viewModel: GithubViewerViewModel) = composable(
     CONTRIBUTORS_TAG
 ) {

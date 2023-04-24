@@ -48,7 +48,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     //TODO Handle back stack navigation
     @Composable
     fun GithubViewerNavHost(
@@ -99,7 +98,6 @@ class MainActivity : ComponentActivity() {
         observeUserInfo(viewModel, navController)
         observeFollowersFollowingsInfo(viewModel, navController)
     }
-
     @Composable
     private fun observeUserInfo(
         viewModel: GithubViewerViewModel,

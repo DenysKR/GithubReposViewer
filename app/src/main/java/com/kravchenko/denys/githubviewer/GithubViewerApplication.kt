@@ -7,7 +7,6 @@ import com.kravchenko.denys.githubviewer.di.signInModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
-
 class GithubViewerApplication : Application() {
     override fun onCreate() {
         super.onCreate()
