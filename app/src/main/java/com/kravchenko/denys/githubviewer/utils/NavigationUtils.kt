@@ -50,7 +50,10 @@ fun NavGraphBuilder.buildRepositoryScreen(
     RepositoryScreen(onContributorsClick = {
         navController.navigate(CONTRIBUTORS_TAG)
     }, onOwnerClick = {
-        viewModel.fetchUserInfo(viewModel.selectedRepository!!.ownerName)
+        //TODO Handle error case
+        viewModel.selectedRepository?.let { owner->
+            viewModel.fetchUserInfo(owner.ownerName)
+        }
     }, onStarUnStarClick = {
         viewModel.starRepo()
     }, viewModel = viewModel
